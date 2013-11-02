@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Chat</title>
+    <script type='text/javascript' src='https://cdn.firebase.com/v0/firebase.js'></script>
+    <script type='text/javascript' src='http://code.jquery.com/jquery-1.10.2.js'></script>
+    <style>
+      .person {
+        display: inline;
+        position: relative;
+        float: left;
+        width: 100px;
+        height: 150px;
+        margin-right: 50px;
+        margin-top: 10px;
+      }
+      .person img {
+        margin: 0 auto;
+      }
+      .person p {
+        margin-top: -20px;
+        text-align: justify;
+      }
+      .msg {
+        position: absolute;
+        background-color: #f1f1f1;
+        left: 56px;
+      }
+      .clear {
+        clear: both;
+      }
+    </style>
+</head>
+<body>
+  <form id='form'>
+    <input name="q" id='message'  placeholder="Send message">
+    <input type="submit" value="Send">
+  </form>
+
+  <div id='users'>
+  </div>
+  <div class='clear'></div>
+  <script>
+    function getUserDiv(user) {
+      return $('.person p:contains("' + user + '")').parent();
+    }
+
+    var msgRef = new Firebase("https://chg.firebaseio.com/msg");
+    var userRef = new Firebase("https://chg.firebaseio.com/user");
+    var msgRefPush = msgRef.push();
+    var userRefPush = userRef.push();
+
+    var nick = prompt("Your nick");
+    userRefPush.set({nick: nick});
+
+    userRef.on('child_added', function(user) {
+      $('#users').append("<div class='person'><div class='msg'></div><img src='man.png'/><p>"+ user.val().nick + '</p>'+ "</div>");
+    });
+    userRef.on('child_removed', function(user) {
+      getUser.divremove(user.val().nick).remove();
+    });
+
+    userRefPush.onDisconnect().remove();
+
+    function send_fb() {
+      msgRefPush.set({user: nick, val: $('#message').val()});
+      $('#message').val("");
+     }
+    $('form').submit(function(e) { e.preventDefault(); send_fb(); });
+
+    msgRef.on('child_added', function(snapshot) {
+      var el = getUserDiv(snapshot.val().user).find('.msg')
+      el.html(snapshot.val().val);
+      setTimeout(function() {
+        el.html("");
+      }, 4000);
+    });
+
+  </script>
+</body>
+</html>
