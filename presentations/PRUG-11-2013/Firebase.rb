@@ -70,6 +70,27 @@ center <<-AMEN
 AMEN
 
 center <<-AMEN
+  Security
+AMEN
+
+center <<-AMEN
+  Only piece of backend you have to write 
+AMEN
+
+code <<-AMEN
+{
+  "rules": {
+    "users": {
+      "$user": {
+        ".read": "$user == auth.username",
+        ".write": "$user == auth.username"
+      }
+    }
+  }
+}
+AMEN
+
+center <<-AMEN
   Automatic Scaling  
 AMEN
 
