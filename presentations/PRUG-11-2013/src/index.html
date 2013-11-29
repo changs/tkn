@@ -58,7 +58,7 @@
       $('#users').append("<div class='person'><div class='msg'></div><img src='man.png'/><p>"+ user.val().nick + '</p>'+ "</div>");
     });
     userRef.on('child_removed', function(user) {
-      getUser.divremove(user.val().nick).remove();
+      getUserDiv(user.val().nick).remove();
     });
 
     userRefPush.onDisconnect().remove();
